@@ -7,7 +7,7 @@
       Add Todo
     </button>
 
-    <table>
+    <table class="table">
       <thead>
         <tr>
           <th>#</th>
@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import axios from "../packs/axios_utils";
+
 export default {
   data: function() {
     return {
@@ -59,14 +61,26 @@ export default {
   },
   methods: {
     addTodo() {
-      this.$http
-        .post("todolists.json", { item: this.todo }, {})
+      axios
+        .post(
+          "todolists.json",
+          { item: this.todo },
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
         .then(res => this.fetchTodoLists(), (this.todo = ""))
         .catch(error => console.log("Got a problem" + error));
     },
     deleteTodo(todo_id) {
       this.$http
-        .delete("todolists/" + todo_id + ".json")
+        .delete("todolists/" + todo_id + ".json", {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
         .then(res => this.fetchTodoLists())
         .catch(error => console.log("Got a problem" + error));
     },
@@ -74,19 +88,34 @@ export default {
       todoItem.editable = !todoItem.editable;
     },
     updateTodo(todoItem) {
-      this.$http
-        .put("todolists/" + todoItem.id, { item: todoItem.item }, {})
+      axios
+        .put(
+          "todolists/" + todoItem.id,
+          { item: todoItem.item },
+          {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          }
+        )
         .then(res => this.fetchTodoLists())
         .catch(error => console.log("Got a problem" + error));
     },
-    fetchTodoLists: function() {
-      const resource = this.$resource("/todolists.json/{ id }");
-      resource.get().then(function(response) {
+    fetchTodoLists() {
+      axios.get("/todolists.json").then(response => {
         const newList = response.data.map(oldItem => {
           return { ...oldItem, editable: true };
         });
         this.list = newList;
       });
+      // this.$resource("/todolists.json/{ id }")
+      //   .get()
+      //   .then(function(response) {
+      //     const newList = response.data.map(oldItem => {
+      //       return { ...oldItem, editable: true };
+      //     });
+      //     this.list = newList;
+      //   });
     }
   }
 };
