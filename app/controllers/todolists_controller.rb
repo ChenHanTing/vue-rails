@@ -1,74 +1,66 @@
+# frozen_string_literal: true
+
 class TodolistsController < ApplicationController
-  before_action :set_todolist, only: [:show, :edit, :update, :destroy]
+  before_action :set_todolist, only: %i[show edit update destroy]
+  before_action :authenticate_user!
 
-  # GET /todolists
-  # GET /todolists.json
   def index
-    @todolists = Todolist.all
+    @todolists = if params[:account]
+                   user = User.find_by(email: params[:account])
+                   Todolist.where(user: user)
+                 else
+                   Todolist.all
+                 end
   end
 
-  # GET /todolists/1
-  # GET /todolists/1.json
-  def show
-  end
-
-  # GET /todolists/new
-  def new
-    @todolist = Todolist.new
-  end
-
-  # GET /todolists/1/edit
-  def edit
-  end
-
-  # POST /todolists
-  # POST /todolists.json
   def create
-    @todolist = Todolist.new(todolist_params)
-
-    respond_to do |format|
-      if @todolist.save
-        format.html { redirect_to @todolist, notice: 'Todolist was successfully created.' }
-        format.json { render :show, status: :created, location: @todolist }
-      else
-        format.html { render :new }
-        format.json { render json: @todolist.errors, status: :unprocessable_entity }
+    todo_flow = Todolist.transaction do
+      (1..params[:number]).each do |_|
+        @todolist = Todolist.new(todolist_params)
+        @todolist.user = current_user
+        @todolist.save!
       end
     end
+
+    respond_result(todo_flow, '新增成功')
   end
 
-  # PATCH/PUT /todolists/1
-  # PATCH/PUT /todolists/1.json
   def update
-    respond_to do |format|
-      if @todolist.update(todolist_params)
-        format.html { redirect_to @todolist, notice: 'Todolist was successfully updated.' }
-        format.json { render :show, status: :ok, location: @todolist }
-      else
-        format.html { render :edit }
-        format.json { render json: @todolist.errors, status: :unprocessable_entity }
-      end
-    end
+    respond_result(@todolist.update(todolist_params), '更新成功')
   end
 
-  # DELETE /todolists/1
-  # DELETE /todolists/1.json
   def destroy
-    @todolist.destroy
-    respond_to do |format|
-      format.html { redirect_to todolists_url, notice: 'Todolist was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    respond_result(@todolist.destroy, '刪除成功')
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_todolist
-      @todolist = Todolist.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def todolist_params
-      params.require(:todolist).permit(:item)
+  # Use callbacks to share common setup or constraints between actions.
+  def set_todolist
+    @todolist = Todolist.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def todolist_params
+    params.require(:todolist).permit(:item, :number)
+  end
+
+  def respond_result(cond, msg)
+    respond_to do |format|
+      format.html
+      format.json do
+        if cond
+          render json: {
+            message: msg,
+            success: true
+          }
+        else
+          render json: {
+            message: @todolist.errors.full_messages.join(', '),
+            success: false
+          }
+        end
+      end
     end
+  end
 end
