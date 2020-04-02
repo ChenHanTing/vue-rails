@@ -21,6 +21,14 @@ gem 'jbuilder', '~> 2.7'
 # gem 'bcrypt', '~> 3.1.7'
 gem 'devise'
 
+# The gem to import excel file
+gem 'roo', '~> 2.8.0'
+# The gem to export excel file
+gem 'rubyzip'
+gem 'caxlsx'
+gem 'caxlsx_rails'
+
+gem 'react_on_rails', '11.1.4'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 
@@ -31,6 +39,7 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'awesome_rails_console'
+  gem 'foreman'
   gem 'pry'
   gem 'pry-nav'
   gem 'pry-rails'
@@ -60,3 +69,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem 'mini_racer', platforms: :ruby
