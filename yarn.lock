@@ -4292,6 +4292,11 @@ levenary@^1.1.1:
   dependencies:
     leven "^3.1.0"
 
+linear-algebra@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/linear-algebra/-/linear-algebra-3.1.4.tgz#e5dc0ab5ba1fbd23473209bf923d6238db78a56b"
+  integrity sha1-5dwKtbofvSNHMgm/kj1iONt4pWs=
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
