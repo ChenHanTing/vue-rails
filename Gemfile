@@ -27,6 +27,7 @@ gem 'roo', '~> 2.8.0'
 gem 'rubyzip'
 gem 'caxlsx'
 gem 'caxlsx_rails'
+gem 'annotate'
 
 gem 'react_on_rails', '11.1.4'
 # Use Active Storage variant
