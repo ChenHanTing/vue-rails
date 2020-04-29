@@ -1,5 +1,5 @@
-import Banks from "../common/bank_code";
+import Banks from "../common/bank_branch";
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log(Banks)
+  console.log(Banks);
 });
